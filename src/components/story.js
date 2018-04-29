@@ -6,7 +6,7 @@ export default class Story extends Component {
     var date = new Date(this.props.time * 1000);
 
     return (
-      <li>
+      <li className="story">
         <a href={this.props.url} target="_blank">{this.props.title}</a> - {this.props.author} - {date.toLocaleString()}
       </li>
     )
