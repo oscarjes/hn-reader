@@ -1,21 +1,25 @@
+body {
+  /* Hacker News fonts & background color */
+  font-family: Verdana, Geneva, sans-serif;
+  background-color: rgb(246, 246, 239);
+}
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
 .App-header {
-  background-color: #222;
-  height: 60px;
+  /* Hacker News orange */
+  background-color: rgb(255, 102, 0);
+  height: 30px;
   padding: 20px;
-  color: white;
+  color: #000000;
+  margin-bottom: 20px;
 }
 
 .App-title {
   font-size: 1.5em;
+  margin: 0;
 }
 
 .App-intro {
@@ -24,6 +28,32 @@
 
 .story {
   margin-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Hacker News styling */
+
+.secondary-text {
+  
+  color: #828282;
+  font-size: small;
+}
+
+a:visited {
+  color: #828282;
+  text-decoration: none;
+}
+
+a:link {
+  color: #000000;
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Pure CSS Loader from loading.io */
@@ -40,8 +70,8 @@
   height: 46px;
   margin: 1px;
   border-radius: 50%;
-  border: 5px solid #fcf;
-  border-color: #fcf transparent #fcf transparent;
+  border: 5px solid rgb(255, 102, 0);
+  border-color: rgb(255, 102, 0) transparent rgb(255, 102, 0) transparent;
   animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {

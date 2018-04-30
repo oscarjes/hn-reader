@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 export default class Story extends Component {
   render() {
@@ -7,8 +7,11 @@ export default class Story extends Component {
 
     return (
       <li className="story">
-        <a href={this.props.url} target="_blank">{this.props.title}</a> - {this.props.author} - {date.toLocaleString()}
+        <a href={this.props.url} target="_blank">
+          {this.props.title}
+        </a><br />
+        <span className="secondary-text">Posted by {this.props.author} on {date.toLocaleString()}</span>
       </li>
-    )
+    );
   }
 }

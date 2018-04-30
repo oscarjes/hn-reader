@@ -47,7 +47,7 @@ class App extends Component {
 
     // Add story to stories array in state
     stories.push(story);
-    
+
     // Force render since we want each story to be displayed immediately
     // otherwise react will only update after fetching all of the items
     this.setState(this.state);
@@ -122,7 +122,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">HN Reader</h1>
+          <h1 className="App-title">Hacker News Reader</h1>
         </header>
         <List stories={this.state.stories} />
         {this.state.isLoading && <Spinner />}
