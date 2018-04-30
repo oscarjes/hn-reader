@@ -2,6 +2,7 @@
   "name": "hn-reader",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://oscarjes.github.io/hn-reader",
   "dependencies": {
     "lodash": "^4.17.10",
     "react": "^16.3.2",
@@ -12,6 +13,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "devDependencies": {
+    "gh-pages": "^1.1.0"
   }
 }
