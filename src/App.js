@@ -10,14 +10,13 @@ class App extends Component {
     this.state = {
       newStoryIds: [],
       stories: [],
-      apiRequests: 0,
       isLoading: false
     };
   }
 
   nextTwentyStories(newStoryIds) {
-    // Returns the next 20 stories from the array
-    // Removes the 20 stories from original array
+    // Returns the next 20 stories from the array &
+    // removes the 20 stories from original array
     return newStoryIds.splice(0, 20);
   }
 
@@ -29,9 +28,16 @@ class App extends Component {
     );
     const story = await results.json();
     // Add story to stories array in state
+    let storiesInLocalStorage = localStorage.getItem('stories');
+    if (storiesInLocalStorage) {
+      localStorage.setItem('stories', storiesInLocalStorage + ',' + JSON.stringify(story));
+      localStorage.setItem('storiesArray', '[' + storiesInLocalStorage + ']');
+    } else {
+      localStorage.setItem('stories', JSON.stringify(story));
+    }
     stories.push(story);
     // Force render since we want each story to be displayed immediately
-    // Otherwise react will only update after fetching all of the items
+    // otherwise react will only update after fetching all of the items
     this.setState(this.state);
   }
 
@@ -50,6 +56,12 @@ class App extends Component {
   async componentDidMount() {
     // Activate spinner
     this.setState({ isLoading: true });
+
+    if (!navigator.onLine) {
+      this.setState({ newStoryIds: JSON.parse(localStorage.getItem('newStoryIds')) });
+      this.setState({ stories: JSON.parse(localStorage.getItem('storiesArray')) });
+    }
+    
     // Retrieve the ids of the 500 latest stories
     const results = await fetch(
       "https://hacker-news.firebaseio.com/v0/newstories.json"
@@ -57,6 +69,7 @@ class App extends Component {
     const newStoryIds = await results.json();
     // Save the story ids to state
     this.setState({ newStoryIds: newStoryIds });
+    localStorage.setItem('newStoryIds', JSON.stringify(newStoryIds));
     // Grab the ids of the next 20 stories
     const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
     // Fetch the details for the 20 stories
@@ -65,17 +78,17 @@ class App extends Component {
     }
     // Deactivate spinner
     this.setState({ isLoading: false });
-    // Add event listener for scrolling
-    // Throttle onScroll using lodash to improve performance
+    // Add event listener for scrolling +
+    // throttle onScroll using lodash to improve performance
     window.addEventListener("scroll", _.throttle(this.onScroll, 16), false);
   }
 
   onScroll = () => {
     if (
       // Fire off only once I get close to the bottom
-      // Only if there are already stories in state and
-      // Only if it's not loading
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+      // only if there are already stories in state and
+      // only if it's not loading
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 250 &&
       this.state.stories &&
       !this.state.isLoading
     ) {
