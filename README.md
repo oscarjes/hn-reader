@@ -8,10 +8,11 @@ By [Oscar Jesionek](https://www.oscarjesionek.com)
 
 1. Navigate to [repo](https://github.com/oscarjes/hn-reader)
 2. Clone locally using `git clone git@github.com:oscarjes/hn-reader.git`
-3. Install dependencies using `npm install`
-4. Start your server using `npm start`
-5. Navigate to app in [browser](http://localhost:3000)
-6. Enjoy!
+3. Open the project folder `cd hn-reader`
+4. Install dependencies using `npm install`
+5. Start your server using `npm start`
+6. Navigate to app in [browser](http://localhost:3000)
+7. Enjoy!
 
 ## Tech Choice
 
@@ -22,7 +23,7 @@ The app was built using React. I used [create-react-app](https://github.com/face
 - [x] The app will display a list of the latest Hacker News stories in descending order from newest to oldest. Each list item should show the title (which should link to the story), author name, and posted time.
 - [x] The app needs to display each HN list item as soon as it has been fetched.
 - [x] The app should support infinite scroll.
-- [x] The app should support offline capability
+- [x] The app should support offline capability.
 
 ## Bonuses!
 
