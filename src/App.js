@@ -15,6 +15,68 @@ class App extends Component {
     };
   }
 
+  async componentDidMount() {
+    // Set app title, create-react-app specific
+    document.title = "Hacker News Reader";
+
+    // Offline support: if not online then set state from localStorage
+    if (!navigator.onLine) {
+      this.setState({
+        isOffline: true,
+        isLoading: false,
+        newStoryIds: JSON.parse(localStorage.getItem("newStoryIds")),
+        stories: JSON.parse(localStorage.getItem("storiesArray"))
+      });
+    }
+
+    // Error handling
+    try {
+      // Activate spinner
+      this.setState({ isLoading: true });
+
+      // Retrieve the ids of the 500 latest stories
+      const results = await fetch(
+        "https://hacker-news.firebaseio.com/v0/newstories.json"
+      );
+      const newStoryIds = await results.json();
+
+      // If api call was successful update state & localStorage
+      if (newStoryIds) {
+        // Save the story ids to state & to localStorage for offline support
+        this.setState({
+          newStoryIds: newStoryIds,
+          isOffline: false
+        });
+
+        // NOTE: localStorage is fine for this use-case but
+        // for a customer-facing app something like IndexedDB would be better
+        localStorage.setItem("newStoryIds", JSON.stringify(newStoryIds));
+
+        // Clear old stories from localStorage
+        localStorage.removeItem("storiesArray");
+        localStorage.removeItem("stories");
+
+        // Grab the ids of the next 20 stories
+        const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
+
+        // Fetch the details for the 20 stories
+        for (let story of twentyStories) {
+          await this.fetchStory(story);
+        }
+      }
+
+      // Deactivate spinner
+      this.setState({ isLoading: false });
+
+      // Add event listener for scrolling +
+      // throttle onScroll using lodash to improve performance
+      window.addEventListener("scroll", _.throttle(this.onScroll, 16), false);
+    } catch (error) {
+      console.log("Initial api call failed: " + error);
+      this.setState({ isLoading: false });
+    }
+  }
+
   nextTwentyStories(newStoryIds) {
     // Returns the next 20 stories from the array &
     // removes the 20 stories from original array
@@ -59,74 +121,6 @@ class App extends Component {
     }
   }
 
-  async fetchMoreStories() {
-    this.setState({ isLoading: true });
-    // Grab the ids of the next 20 stories
-    const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
-    // Fetch the details for the 20 stories
-    for (let story of twentyStories) {
-      await this.fetchStory(story);
-    }
-    // Deactivate spinner
-    this.setState({ isLoading: false });
-  }
-
-  async componentDidMount() {
-    // Offline support: if not online then set state from localStorage
-    if (!navigator.onLine) {
-      this.setState({
-        isOffline: true,
-        isLoading: false,
-        newStoryIds: JSON.parse(localStorage.getItem("newStoryIds")),
-        stories: JSON.parse(localStorage.getItem("storiesArray"))
-      });
-    }
-
-    // Error handling
-    try {
-      // Activate spinner
-      this.setState({ isLoading: true });
-
-      // Retrieve the ids of the 500 latest stories
-      const results = await fetch(
-        "https://hacker-news.firebaseio.com/v0/newstories.json"
-      );
-      const newStoryIds = await results.json();
-
-      // If api call was successful update state & localStorage
-      if (newStoryIds) {
-        // Save the story ids to state & to localStorage for offline support
-        this.setState({ 
-          newStoryIds: newStoryIds,
-          isOffline: false
-        });
-        localStorage.setItem("newStoryIds", JSON.stringify(newStoryIds));
-
-        // Clear old stories from localStorage
-        localStorage.removeItem("storiesArray");
-        localStorage.removeItem("stories");
-
-        // Grab the ids of the next 20 stories
-        const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
-
-        // Fetch the details for the 20 stories
-        for (let story of twentyStories) {
-          await this.fetchStory(story);
-        }
-      }
-
-      // Deactivate spinner
-      this.setState({ isLoading: false });
-
-      // Add event listener for scrolling +
-      // throttle onScroll using lodash to improve performance
-      window.addEventListener("scroll", _.throttle(this.onScroll, 16), false);
-    } catch (error) {
-      console.log("Initial api call failed: " + error);
-      this.setState({ isLoading: false });
-    }
-  }
-
   onScroll = () => {
     if (
       // Fire off only once I get close to the bottom
@@ -139,7 +133,19 @@ class App extends Component {
     ) {
       this.fetchMoreStories();
     }
-  };
+  }
+
+  async fetchMoreStories() {
+    this.setState({ isLoading: true });
+    // Grab the ids of the next 20 stories
+    const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
+    // Fetch the details for the 20 stories
+    for (let story of twentyStories) {
+      await this.fetchStory(story);
+    }
+    // Deactivate spinner
+    this.setState({ isLoading: false });
+  }
 
   render() {
     return (

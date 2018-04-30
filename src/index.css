@@ -1,5 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  /* Hacker News fonts & background color */
+  font-family: Verdana, Geneva, sans-serif;
+  background-color: rgb(246, 246, 239);
 }

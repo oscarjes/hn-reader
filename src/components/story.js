@@ -9,8 +9,11 @@ export default class Story extends Component {
       <li className="story">
         <a href={this.props.url} target="_blank">
           {this.props.title}
-        </a><br />
-        <span className="secondary-text">Posted by {this.props.author} on {date.toLocaleString()}</span>
+        </a>
+        <br />
+        <span className="secondary-text">
+          Posted by {this.props.author} on {date.toLocaleString()}
+        </span>
       </li>
     );
   }
