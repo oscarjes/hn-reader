@@ -16,8 +16,6 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    // Set app title, create-react-app specific
-    document.title = "Hacker News Reader";
 
     // Offline support: if not online then set state from localStorage
     if (!navigator.onLine) {
@@ -94,28 +92,31 @@ class App extends Component {
       );
       const story = await results.json();
 
-      // Retrieve stories already stored in localStorage
-      let storiesInLocalStorage = localStorage.getItem("stories");
+      // Make sure story data is available (e.g. it hasn't been deleted)
+      if (story) {
+        // Retrieve stories already stored in localStorage
+        let storiesInLocalStorage = localStorage.getItem("stories");
 
-      // Check if it's the first story, needed for proper JSON format
-      if (storiesInLocalStorage) {
-        // If it's not the first story then add a comma before adding object
-        localStorage.setItem(
-          "stories",
-          storiesInLocalStorage + "," + JSON.stringify(story)
-        );
-        // It needs to be an array of objects, so add brackets before and after
-        localStorage.setItem("storiesArray", "[" + storiesInLocalStorage + "]");
-      } else {
-        localStorage.setItem("stories", JSON.stringify(story));
+        // Check if it's the first story, needed for proper JSON format
+        if (storiesInLocalStorage) {
+          // If it's not the first story then add a comma before adding object
+          localStorage.setItem(
+            "stories",
+            storiesInLocalStorage + "," + JSON.stringify(story)
+          );
+          // It needs to be an array of objects, so add brackets before and after
+          localStorage.setItem("storiesArray", "[" + storiesInLocalStorage + "]");
+        } else {
+          localStorage.setItem("stories", JSON.stringify(story));
+        }
+
+        // Add story to stories array in state
+        stories.push(story);
+
+        // Force render since we want each story to be displayed immediately
+        // otherwise react will only update after fetching all of the items
+        this.setState(this.state);
       }
-
-      // Add story to stories array in state
-      stories.push(story);
-
-      // Force render since we want each story to be displayed immediately
-      // otherwise react will only update after fetching all of the items
-      this.setState(this.state);
     } catch (error) {
       console.log("Couldn't fetch story: " + error);
     }
