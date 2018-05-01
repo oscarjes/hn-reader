@@ -153,7 +153,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">
-            Hacker News Reader{this.state.isOffline && " (Offline Mode)"}
+            Hacker News Reader{this.state.isOffline && "  (Offline Mode)"}
           </h1>
         </header>
         <List stories={this.state.stories} />
