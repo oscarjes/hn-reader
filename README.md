@@ -10,13 +10,14 @@ By [Oscar Jesionek](https://www.oscarjesionek.com)
 2. Clone locally using `git clone git@github.com:oscarjes/hn-reader.git`
 3. Open the project folder `cd hn-reader`
 4. Install dependencies using `npm install`
-5. Start your server using `npm start`
-6. Navigate to app in [browser](http://localhost:3000)
-7. Enjoy!
+5. Run test using `npm test`
+6. Start your server using `npm start`
+7. Navigate to app in [browser](http://localhost:3000)
+8. Enjoy!
 
 ## Tech Choice
 
-The app was built using React. I used [create-react-app](https://github.com/facebook/create-react-app) to generate the scaffolding.
+The app was built using React. I used [create-react-app](https://github.com/facebook/create-react-app) to generate the scaffolding, testing is done using Jest & Enzyme.
 
 ## Requirements
 
@@ -38,3 +39,7 @@ The app also looks great on mobile.
 #### Deployed
 
 The app has been deployed on Github Pages. You can check it out [here](https://oscarjes.github.io/hn-reader/).
+
+#### Tests
+
+Basic component tests using Jest and Enzyme are included. They can be run using `npm test`.
