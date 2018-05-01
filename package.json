@@ -4,10 +4,13 @@
   "private": true,
   "homepage": "http://oscarjes.github.io/hn-reader",
   "dependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "react-test-renderer": "^16.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

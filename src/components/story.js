@@ -7,7 +7,7 @@ export default class Story extends Component {
 
     return (
       <li className="story">
-        <a href={this.props.url} target="_blank">
+        <a href={this.props.url} className="story-link" target="_blank">
           {this.props.title}
         </a>
         <br />
