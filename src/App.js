@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import List from "./components/list";
 import Spinner from "./components/spinner";
-import _ from "lodash";
+import throttle from "lodash.throttle";
 
 class App extends Component {
   constructor(props) {
@@ -27,18 +27,14 @@ class App extends Component {
       });
     }
 
-    // Error handling
     try {
-      // Activate spinner
       this.setState({ isLoading: true });
 
-      // Retrieve the ids of the 500 latest stories
       const results = await fetch(
         "https://hacker-news.firebaseio.com/v0/newstories.json"
       );
       const newStoryIds = await results.json();
 
-      // If api call was successful update state & localStorage
       if (newStoryIds) {
         // Save the story ids to state & to localStorage for offline support
         this.setState({
@@ -54,37 +50,48 @@ class App extends Component {
         localStorage.removeItem("storiesArray");
         localStorage.removeItem("stories");
 
-        // Grab the ids of the next 20 stories
-        const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
+        // Grab the ids of the first 20 stories
+        const twentyStories = this.firstTwentyStories(newStoryIds);
 
         // Fetch the details for the 20 stories
         for (let story of twentyStories) {
-          await this.fetchStory(story);
+          this.fetchStory(story);
         }
       }
 
-      // Deactivate spinner
       this.setState({ isLoading: false });
 
       // Add event listener for scrolling +
       // throttle onScroll using lodash to improve performance
-      window.addEventListener("scroll", _.throttle(this.onScroll, 16), false);
+      window.addEventListener("scroll", throttle(this.onScroll, 16), false);
     } catch (error) {
       console.log("Initial api call failed: " + error);
       this.setState({ isLoading: false });
     }
   }
 
-  nextTwentyStories(newStoryIds) {
-    // Returns the next 20 stories from the array &
+  firstTwentyStories(newStoryIds) {
+    // Returns the next 20 stories from the array
     // removes the 20 stories from original array
-    return newStoryIds.splice(0, 20);
+    const twentyStories = newStoryIds.splice(0, 20);
+    this.setState({newStoryIds: newStoryIds});
+    localStorage.setItem("newStoryIds", JSON.stringify(newStoryIds));
+    return twentyStories;
+  }
+
+  nextTwentyStories() {
+    // Returns the next 20 stories from the array
+    // removes the 20 stories from original array
+    const newStoryIds = this.state.newStoryIds.slice();
+    const twentyStories = newStoryIds.splice(0, 20);
+    this.setState({newStoryIds: newStoryIds});
+    localStorage.setItem("newStoryIds", JSON.stringify(newStoryIds));
+    return twentyStories;
   }
 
   async fetchStory(storyId) {
-    // Error handling
     try {
-      const stories = this.state.stories;
+      //const stories = this.state.stories;
 
       // Fetch story details
       const results = await fetch(
@@ -111,7 +118,9 @@ class App extends Component {
         }
 
         // Add story to stories array in state
-        stories.push(story);
+        const updatedStories = this.state.stories.slice();
+        updatedStories.push(story);
+        this.setState({stories: updatedStories});
 
         // Force render since we want each story to be displayed immediately
         // otherwise react will only update after fetching all of the items
@@ -124,9 +133,6 @@ class App extends Component {
 
   onScroll = () => {
     if (
-      // Fire off only once I get close to the bottom
-      // only if there are already stories in state and
-      // only if it's not loading
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 250 &&
       this.state.stories &&
       !this.state.isLoading &&
@@ -138,13 +144,11 @@ class App extends Component {
 
   async fetchMoreStories() {
     this.setState({ isLoading: true });
-    // Grab the ids of the next 20 stories
-    const twentyStories = this.nextTwentyStories(this.state.newStoryIds);
+    const twentyStories = this.nextTwentyStories();
     // Fetch the details for the 20 stories
     for (let story of twentyStories) {
       await this.fetchStory(story);
     }
-    // Deactivate spinner
     this.setState({ isLoading: false });
   }
 

@@ -5,7 +5,8 @@ export default class List extends Component {
   render() {
     return (
       <ul>
-        {this.props.stories.map(story => (
+        {this.props.stories
+        .map(story => (
           <Story
             title={story.title}
             author={story.by}
