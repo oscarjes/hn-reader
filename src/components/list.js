@@ -3,27 +3,39 @@ import Story from "./story";
 
 export default class List extends Component {
   render() {
-    const myData = [].concat(this.props.stories)
-    const sorted = myData.sort((a, b) => a.position < b.position)
-    var code = []
-    for (let i = 0; i < sorted.length; i++) {
-      if (sorted[i].position == i) {
-      console.log(myData[i].position);
-      console.log(i);
-      
-      code.push(<Story
-        title={myData[i].title}
-        author={myData[i].by}
-        time={myData[i].time}
-        url={myData[i].url}
-        key={myData[i].id}
-      />);
+    function compare(a, b) {
+      if (a.position < b.position) {
+        return -1;
+      }
+      if (a.position > b.position) {
+        return 1;
+      }
+      return 0;
+    }
+
+    const storyProps = this.props.stories;
+    const sorted = storyProps.sort(compare);
+
+    var stories = [];
+    for (var i = 0; i < sorted.length; i++) {
+      if (i === sorted[i].position) {
+        stories.push(sorted[i]);
+      } else {
+        break;
       }
     }
-    
+
     return (
       <ul>
-        {code}
+        {stories.map(story => (
+          <Story
+            title={story.title}
+            author={story.by}
+            time={story.time}
+            url={story.url}
+            key={story.id}
+          />
+        ))}
       </ul>
     );
   }

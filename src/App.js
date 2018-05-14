@@ -140,6 +140,7 @@ class App extends Component {
   }
 
   onScroll = () => {
+
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 250 &&
       this.state.stories &&
@@ -147,6 +148,7 @@ class App extends Component {
       !this.state.isOffline
     ) {
       this.fetchMoreStories();
+      setTimeout(function() { this.setState({isLoading: false}); }.bind(this), 2000);
     }
   }
 
@@ -157,7 +159,6 @@ class App extends Component {
     for (let story of twentyStories) {
       this.fetchStory(story);
     }
-    this.setState({ isLoading: false });
   }
 
   render() {
