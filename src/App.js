@@ -8,10 +8,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      allStoryIds: [],
       newStoryIds: [],
       stories: [],
       isLoading: false,
-      isOffline: false
+      isOffline: false,
+      position: 0
     };
   }
 
@@ -34,10 +36,12 @@ class App extends Component {
         "https://hacker-news.firebaseio.com/v0/newstories.json"
       );
       const newStoryIds = await results.json();
+      const allStoryIds = newStoryIds.slice();
 
       if (newStoryIds) {
         // Save the story ids to state & to localStorage for offline support
         this.setState({
+          allStoryIds: allStoryIds,
           newStoryIds: newStoryIds,
           isOffline: false
         });
@@ -55,7 +59,7 @@ class App extends Component {
 
         // Fetch the details for the 20 stories
         for (let story of twentyStories) {
-          this.fetchStory(story);
+          this.fetchStory(story, allStoryIds);
         }
       }
 
@@ -89,18 +93,22 @@ class App extends Component {
     return twentyStories;
   }
 
-  async fetchStory(storyId) {
+  async fetchStory(storyId, allStoryIds) {
     try {
-      //const stories = this.state.stories;
-
+      //console.log(typeof(storyId));
+      const storyIds = allStoryIds || this.state.allStoryIds;
+      //console.log(typeof(storyIds[0]));
+      const position = storyIds.findIndex((e) => e === storyId);
       // Fetch story details
       const results = await fetch(
         `https://hacker-news.firebaseio.com/v0/item/${storyId}.json`
       );
       const story = await results.json();
+      story.position = position;
 
       // Make sure story data is available (e.g. it hasn't been deleted)
       if (story) {
+
         // Retrieve stories already stored in localStorage
         let storiesInLocalStorage = localStorage.getItem("stories");
 
@@ -147,7 +155,7 @@ class App extends Component {
     const twentyStories = this.nextTwentyStories();
     // Fetch the details for the 20 stories
     for (let story of twentyStories) {
-      await this.fetchStory(story);
+      this.fetchStory(story);
     }
     this.setState({ isLoading: false });
   }
